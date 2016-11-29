@@ -1,0 +1,29 @@
+{
+  "name": "react-plant",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "bootstrap": "^3.3.7",
+    "react-scripts": "0.7.0"
+  },
+  "dependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
+    "deep-freeze": "0.0.1",
+    "expect": "^1.20.2",
+    "jquery": "^3.1.1",
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.6",
+    "react-dom": "^15.3.2",
+    "react-redux": "^4.4.6",
+    "redux": "^3.6.0",
+    "redux-form": "^6.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
