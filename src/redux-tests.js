@@ -1,3 +1,5 @@
+import React from 'react';
+
 const deepFreeze = require('deep-freeze');
 const expect = require('expect');
 const createSpy = expect.createSpy;
@@ -17,7 +19,7 @@ const testDelPlant = () => {
 }
 
 
-const testAddPlant = () => {
+exports.testAddPlant = () => {
   const stateBefore = {
     nameField: 'Test',
     descField: 'Description',
@@ -37,7 +39,6 @@ const testAddPlant = () => {
     descField: '',
     plantDB:[
       {
-        id: 1;
         name: "Test",
         description: "Description"
       }
@@ -49,6 +50,3 @@ const testAddPlant = () => {
   ).toEqual(stateAfter);
 
 }
-
-testAddPlant();
-console.log("All tests passed!");
