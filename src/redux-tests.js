@@ -6,14 +6,13 @@ const createSpy = expect.createSpy;
 const spyOn = expect.spyOn;
 const isSpy = expect.isSpy;
 
-const reducer = require('./plant_reducer');
+const reducer = require('./reducers/plant');
 
 const testDelPlant = () => {
-  const stateBEfore = {
+  const stateBefore = {
     nameField: '',
     descField: '',
     plantDB: [
-
     ]
   }
 }

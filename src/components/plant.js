@@ -5,9 +5,11 @@ import { ListGroupItem } from 'react-bootstrap';
 class Plant extends Component {
   render(){
     return (
-          <ListGroupItem className="AlignTextLeft" key={this.props.id}> <strong> {this.props.name}</strong>: {this.props.description} </ListGroupItem>
-
-
+          <ListGroupItem
+            className="AlignTextLeft"
+            key={this.props.id}>
+              <strong> {this.props.name}</strong>: {this.props.description}
+          </ListGroupItem>
     )
   }
 }
