@@ -117,11 +117,23 @@ const App = React.createClass ({
     return false;
   },
 
+  handleDelete: plantId => event => {
+    event.preventDefault();
+    console.log("Looks like the delete button was clicked!");
+    console.log(plantId);
+    store.dispatch({
+      type:'DELETE_PLANT',
+      id: plantId
+    });
+
+    return false;
+  },
+
   render() {
     //console.log("Render just got called!");
-    const myPlantContent = store.getState().plantDB.map(function(plant) {
+    const myPlantContent = store.getState().plantDB.map((plant) => {
       return (
-          <Plant key={plant.id} name={plant.name} description={plant.description}/>
+          <Plant key={plant.id} id={plant.id} name={plant.name} description={plant.description} handleDelete={this.handleDelete}/>
     )});
 
     const databaseTitle = (
@@ -154,7 +166,7 @@ const App = React.createClass ({
   },
 })
 
-/*
+
 
 const render = () => {
   ReactDOM.render(
@@ -167,5 +179,5 @@ const render = () => {
 
 store.subscribe(render);
 render();
-*/
+
 export default App;
