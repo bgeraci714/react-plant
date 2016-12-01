@@ -43,10 +43,8 @@ var currentId = new Date().valueOf();
 const App = React.createClass ({
   getInitialState(){
       return {
-          lastAdded: 0,
           nameField: '',
           descField: '',
-          plantDB:   [],
         }
     },
 
@@ -86,10 +84,13 @@ const App = React.createClass ({
     .then(json)
     .then((data) => {
       store.dispatch(replacePlant(currentId, data));
-
-      console.log(store.getState());
     }).catch((error) => {
       console.log("Request failed during posting", error);
+    });
+
+    this.setState({
+      nameField: '',
+      descField: ''
     });
 
     return false;
