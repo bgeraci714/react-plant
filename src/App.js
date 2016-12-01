@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 // redux && middleware
 import { createStore } from 'redux';
@@ -30,49 +31,19 @@ const json = ( response ) => {
   return response.json()
 }
 
-/*const getCurrentPlantDB = (plantApiURL, status, json) => {
-  fetch(plantApiURL)
-    .then(status)
-    .then(json)
-    .then((data) => {
-      console.log(data);
-      return {plantDB: data};
-    }).catch((error) => {
-      console.log("Request failed", error);
-    });
-}
-*/
-const resolve = (data) => {
-  console.log(data);
-  return {
-    nameField: '',
-    descField: '',
-    plantDB: data}
-}
+var store = createStore(plants, {
+  receivedData: false,
+  nameField: '',
+  descField: '',
+  plantDB: []
+});
 
-const loadStore = () => {
-  return new Promise(resolve => {
-    fetch(plantApiURL)
-      .then(status)
-      .then(json)
-      .then(resolve)
-      .catch((error) => {
-        console.log("Request failed", error);
-      });
-  });
-}
-
-console.log(loadStore()["promiseValue"]);
-console.log(5);
-//const storeCreator = applyMiddleware(asyncInitialState.middleware(loadStore));
-const store = createStore(plants);
-
-
-console.log(store.getState());
+var currentId = new Date().valueOf();
 
 const App = React.createClass ({
   getInitialState(){
       return {
+          lastAdded: 0,
           nameField: '',
           descField: '',
           plantDB:   [],
@@ -81,14 +52,14 @@ const App = React.createClass ({
 
   componentWillMount () {
 
-    console.log(store.getState());
-    let that = this;
     fetch(plantApiURL)
       .then(status)
       .then(json)
       .then((data) => {
-        //console.log(data);
-        that.setState({plantDB: data})
+        store.dispatch({
+          type: 'INCORPORATE_DB_PLANTS',
+          plants: data
+        });
       }).catch((error) => {
         console.log("Request failed", error);
       });
@@ -96,19 +67,32 @@ const App = React.createClass ({
   },
 
   handleChange(obj) {
-    // dispatch here!!!
     this.setState(obj);
-    console.log(this.state);
   },
   handleSubmit(event) {
     event.preventDefault();
-    // action creator here!!
+
     let newPlant = {
       name:this.state.nameField,
       description: this.state.descField
     };
+    currentId = new Date().valueOf();
 
+    console.log("Before ADD_PLANT");
+    console.log(store.getState());
 
+    store.dispatch({
+      type: 'ADD_PLANT',
+      lastAdded: currentId,
+      name: this.state.nameField,
+      description: this.state.descField
+    });
+
+    console.log("After ADD_PLANT");
+    console.log(store.getState());
+    store.dispatch({
+      type: 'FETCH_PLANTS_REQUEST'
+    })
     fetch(plantApiURL, {
       method: 'post',
       headers: {
@@ -118,24 +102,24 @@ const App = React.createClass ({
     })
     .then(json)
     .then((data) => {
-      console.log("Request succeeded with JSON response", data);
+      store.dispatch({
+        type: 'REPLACE_PLANT_WITH_DB',
+        lastAdded: currentId,
+        plant: data
+      });
+      store.dispatch({
+        type: 'FETCH_PLANTS_SUCCESS'
+      });
     }).catch((error) => {
       console.log("Request failed during posting", error);
-    });
-
-    // possible dispatch here!!
-    this.setState({
-      nameField: '',
-      descField: '',
-      plantDB: [...this.state.plantDB, newPlant]
     });
 
     return false;
   },
 
   render() {
-    //console.log(this.state);
-    const myPlantContent = this.state.plantDB.map(function(plant) {
+    //console.log("Render just got called!");
+    const myPlantContent = store.getState().plantDB.map(function(plant) {
       return (
           <Plant key={plant.id} name={plant.name} description={plant.description}/>
     )});
@@ -170,4 +154,18 @@ const App = React.createClass ({
   },
 })
 
+/*
+
+const render = () => {
+  ReactDOM.render(
+    <App />,
+    document.getElementById('root')
+  );
+};
+
+
+
+store.subscribe(render);
+render();
+*/
 export default App;
