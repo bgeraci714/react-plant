@@ -44,16 +44,6 @@ exports.plants = (state = {}, action) => {
           ...state,
           plantDB: updatedPlantDB
         }
-    case 'FETCH_PLANTS_REQUEST':
-      return {
-        ...state,
-        receivedData: false
-      }
-    case 'FETCH_PLANTS_SUCCESS':
-      return {
-        ...state,
-        receivedData: true
-      }
     default:
       return state;
   }

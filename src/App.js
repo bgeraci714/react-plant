@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 
 // redux && middleware
 import { createStore } from 'redux';
-//import * as asyncInitialState from 'redux-async-initial-state';
-import { plants } from './reducers/plant';
+import { plants } from './reducers/plant_reducers';
+import { deletePlant, incorporateDB, replacePlant, addPlant } from './actions/plant_actions';
 
 // bootstrap && css
 import { Panel } from 'react-bootstrap';
@@ -12,7 +12,7 @@ import { ListGroup } from 'react-bootstrap';
 import './App.css';
 
 // local componenents
-import Plant from './components/plant';
+import Plant from './components/plant_component';
 import PlantForm from './components/plant_form';
 import Header from './components/header';
 
@@ -56,10 +56,7 @@ const App = React.createClass ({
       .then(status)
       .then(json)
       .then((data) => {
-        store.dispatch({
-          type: 'INCORPORATE_DB_PLANTS',
-          plants: data
-        });
+        store.dispatch(incorporateDB(data));
       }).catch((error) => {
         console.log("Request failed", error);
       });
@@ -71,28 +68,14 @@ const App = React.createClass ({
   },
   handleSubmit(event) {
     event.preventDefault();
-
     let newPlant = {
       name:this.state.nameField,
       description: this.state.descField
     };
     currentId = new Date().valueOf();
 
-    console.log("Before ADD_PLANT");
-    console.log(store.getState());
+    store.dispatch(addPlant(currentId, this.state.nameField, this.state.descField));
 
-    store.dispatch({
-      type: 'ADD_PLANT',
-      lastAdded: currentId,
-      name: this.state.nameField,
-      description: this.state.descField
-    });
-
-    console.log("After ADD_PLANT");
-    console.log(store.getState());
-    store.dispatch({
-      type: 'FETCH_PLANTS_REQUEST'
-    })
     fetch(plantApiURL, {
       method: 'post',
       headers: {
@@ -102,14 +85,9 @@ const App = React.createClass ({
     })
     .then(json)
     .then((data) => {
-      store.dispatch({
-        type: 'REPLACE_PLANT_WITH_DB',
-        lastAdded: currentId,
-        plant: data
-      });
-      store.dispatch({
-        type: 'FETCH_PLANTS_SUCCESS'
-      });
+      store.dispatch(replacePlant(currentId, data));
+
+      console.log(store.getState());
     }).catch((error) => {
       console.log("Request failed during posting", error);
     });
@@ -119,11 +97,14 @@ const App = React.createClass ({
 
   handleDelete: plantId => event => {
     event.preventDefault();
-    console.log("Looks like the delete button was clicked!");
-    console.log(plantId);
-    store.dispatch({
-      type:'DELETE_PLANT',
-      id: plantId
+    store.dispatch(deletePlant(plantId));
+
+    fetch(plantApiURL + plantId, {
+      method: 'delete'
+    })
+    .then(status)
+    .catch((error) => {
+      console.log("Request failed during deletion", error);
     });
 
     return false;
@@ -167,7 +148,6 @@ const App = React.createClass ({
 })
 
 
-
 const render = () => {
   ReactDOM.render(
     <App />,
@@ -175,9 +155,7 @@ const render = () => {
   );
 };
 
-
-
 store.subscribe(render);
-render();
+//render();
 
 export default App;

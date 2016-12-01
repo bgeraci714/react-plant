@@ -1,4 +1,5 @@
 import React from 'react';
+import { deletePlant, incorporateDB, replacePlant, addPlant } from './actions/plant_actions';
 
 const deepFreeze = require('deep-freeze');
 const expect = require('expect');
@@ -6,7 +7,7 @@ const createSpy = expect.createSpy;
 const spyOn = expect.spyOn;
 const isSpy = expect.isSpy;
 
-const reducer = require('./reducers/plant');
+const reducer = require('./reducers/plant_reducers');
 
 const plantsFromDB = [
   {
@@ -35,12 +36,7 @@ exports.testAddPlant = () => {
     plantDB: []
   };
 
-  const action = {
-    type: 'ADD_PLANT',
-    lastAdded: currentId,
-    name: stateBefore.nameField,
-    description: stateBefore.descField
-  }
+  const action = addPlant(currentId, stateBefore.nameField, stateBefore.descField);
 
   deepFreeze(stateBefore);
 
@@ -72,11 +68,8 @@ exports.testDeletePlant = () => {
     descField: '',
     plantDB: plantsFromDB
   }
-
-  const action = {
-    type: 'DELETE_PLANT',
-    id: 46
-  }
+  let plantIdToDelete = 46;
+  const action = deletePlant(plantIdToDelete);
 
   deepFreeze(stateBefore);
   deepFreeze(action);
@@ -118,11 +111,7 @@ exports.testReplacePlant = () => {
     updated_at:"2016-12-01T08:56:52.704Z",
   };
 
-  const action = {
-    type:'REPLACE_PLANT_WITH_DB',
-    lastAdded: currentId,
-    plant: plantFromDB
-  }
+  const action = replacePlant(currentId, plantFromDB);
 
   deepFreeze(stateBefore);
   deepFreeze(plantFromDB);
@@ -153,10 +142,7 @@ exports.testIncorporateDBPlants = () => {
     plantDB: []
   };
 
-  const action = {
-    type: 'INCORPORATE_DB_PLANTS',
-    plants: plantsFromDB
-  };
+  const action = incorporateDB(plantsFromDB);
 
   deepFreeze(stateBefore);
   deepFreeze(action);

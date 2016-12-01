@@ -11,10 +11,9 @@ class Plant extends Component {
             className="AlignTextLeft"
             key={this.props.id}>
               <Button
-                bsStyle="danger" bsSize="xsmall" onClick={this.props.handleDelete(this.props.id)}>
-                X
-              </Button>
-              <strong> {this.props.name}</strong>: {this.props.description}
+                bsStyle="default" bsSize="small" onClick={this.props.handleDelete(this.props.id)}>
+                Del
+              </Button><strong> {this.props.name}</strong>: {this.props.description} 
           </ListGroupItem>
     );
   }
